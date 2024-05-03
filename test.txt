@@ -1,0 +1,11 @@
+curl -X POST http://localhost:5000/register/admin \
+-H "Content-Type: application/json" \
+-d '{"username": "admin_user", "password": "admin123", "email": "admin@example.com"}'
+
+curl -X POST http://localhost:5000/register/user \
+-H "Content-Type: application/json" \
+-d '{"username": "john_doe", "password": "password123", "email": "john@example.com"}'
+
+curl -X POST http://localhost:5000/register/seller \
+-H "Content-Type: application/json" \
+-d '{"username": "seller123", "password": "sellerpass", "email": "seller@example.com", "location": "New York"}'
