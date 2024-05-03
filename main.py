@@ -16,7 +16,7 @@ def register_admin():
     if register_user("Admin", username, password, email):
         return make_response(jsonify({"message": "Admin registered successfully"}), 201)
     else:
-        return make_response(jsonify({"message": "Failed to register admin,Email id already in use"}), 500)
+        return make_response(jsonify({"message": "Failed to register admin,Email id already in use"}), 412)
 
 @app.route('/register/user', methods=['POST'])
 def register_user_endpoint():
@@ -31,7 +31,7 @@ def register_user_endpoint():
     if register_user("Users", username, password, email):
         return make_response(jsonify({"message": "User registered successfully"}), 201)
     else:
-        return make_response(jsonify({"message": "Failed to register user, Email id already in use"}), 500)
+        return make_response(jsonify({"message": "Failed to register user, Email id already in use"}), 412)
 
 @app.route('/register/seller', methods=['POST'])
 def register_seller():
@@ -47,7 +47,7 @@ def register_seller():
     if register_user("Sellers", username, password, email, location):
         return make_response(jsonify({"message": "Seller registered successfully"}), 201)
     else:
-        return make_response(jsonify({"message": "Failed to register seller,Email id already in use"}), 500)
+        return make_response(jsonify({"message": "Failed to register seller,Email id already in use"}), 412)
 
 if __name__ == '__main__':
     app.run(debug=True)
