@@ -3,7 +3,7 @@
 Follow these steps to run the backend server for ShopNest:
 
 1. **Update Database Configuration**
-   - Open `database.py` located in the backend project directory.
+   - Open `config_db.py` located in the backend project directory.
    - Modify the database connection parameters (`host`, `user`, `password`, `database`) according to your MySQL setup. By default:
      ```python
      host = "localhost"
@@ -14,7 +14,7 @@ Follow these steps to run the backend server for ShopNest:
 
 2. **Create MySQL Database**
    - Ensure [MySQL](https://dev.mysql.com/downloads/mysql/) is installed and running.
-   - Create a database named `shopnest` (or as configured in `database.py`) using your preferred MySQL client.
+   - Create a database named `shopnest` (or as configured in `config_db.py`) using your preferred MySQL client.
 
 3. **Set Up Virtual Environment**
    - Create a virtual environment for the project. Use the following commands:

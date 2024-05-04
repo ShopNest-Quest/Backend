@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, make_response
-from database import authenticate, check_user_exists, register
-from create_tables import create_tables
+from db_functions import add_product_to_db, authenticate, check_user_exists, register
+from setup_db import add_default_categories, create_tables
 
 app = Flask(__name__)
 
@@ -97,6 +97,18 @@ def login_seller():
     else:
         return make_response(jsonify({"message": "Invalid credentials"}), 401)
 
+@app.route('/seller/add_product', methods=['POST'])
+def add_product():
+    product_data = request.get_json()
+
+    result = add_product_to_db(product_data)
+
+    if result["success"]:
+        return make_response(jsonify(result), 201)
+    else:
+        return make_response(jsonify(result), 500)
+
 if __name__ == '__main__':
     create_tables()
+    add_default_categories()
     app.run(debug=True)
