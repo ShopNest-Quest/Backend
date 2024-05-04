@@ -13,7 +13,7 @@ Follow these steps to run the backend server for ShopNest:
      ```
 
 2. **Create MySQL Database**
-   - Ensure MySQL is installed and running.
+   - Ensure [MySQL](https://dev.mysql.com/downloads/mysql/) is installed and running.
    - Create a database named `shopnest` (or as configured in `database.py`) using your preferred MySQL client.
 
 3. **Set Up Virtual Environment**
