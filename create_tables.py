@@ -1,18 +1,7 @@
 import mysql.connector
+from database import create_connection
 
-# Establishing a connection to MySQL database
-db_connection = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="root@123",
-    database="shopnest"
-)
-
-# Creating a cursor object using the connection
-cursor = db_connection.cursor()
-
-# Define SQL statements for table creation in correct order
-create_tables = [
+tables = [
     """
     CREATE TABLE IF NOT EXISTS Categories (
         cat_id INT PRIMARY KEY,
@@ -103,15 +92,21 @@ create_tables = [
     """
 ]
 
-# Execute each table creation statement
-for create_table_query in create_tables:
-    try:
-        cursor.execute(create_table_query)
-        print("Table created successfully")
-    except mysql.connector.Error as err:
-        print(f"Error creating table: {err}")
 
-# Committing the transaction and closing the connection
-db_connection.commit()
-cursor.close()
-db_connection.close()
+
+def create_tables():
+    connection = create_connection()
+    if connection:
+        cursor = connection.cursor()
+        # Execute each table creation statement
+        for table in tables:
+            try:
+                cursor.execute(table)
+                print("Table created successfully")
+            except mysql.connector.Error as err:
+                print(f"Error creating table: {err}")
+
+        # Committing the transaction and closing the connection
+        connection.commit()
+        cursor.close()
+        connection.close()
