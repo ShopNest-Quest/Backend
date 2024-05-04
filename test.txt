@@ -32,4 +32,9 @@ curl -X POST http://localhost:5000/login/admin -H "Content-Type: application/jso
 # login seller
 curl -X POST http://localhost:5000/login/seller -H "Content-Type: application/json" -d "{\"username\": \"seller123\", \"password\": \"sellerpass\"}"
 
+# add a prosuct
+curl --request POST ^
+     --url "http://localhost:5000/seller/add_product" ^
+     --header "Content-Type: application/json" ^
+     --data "{\"product_name\": \"Sample Product\", \"price\": 19.99, \"description\": \"This is a \\\"sample\\\" product with special characters\", \"seller_username\": \"seller123\", \"category_id\": 1, \"stock\": 10, \"images\": [\"https://example.com/image1.jpg\", \"https://example.com/image2.jpg\"]}"
 
