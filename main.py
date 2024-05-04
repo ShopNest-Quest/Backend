@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, make_response
-from db_functions import add_product_to_db, authenticate, check_user_exists, register
+from db_functions import add_product_to_db, authenticate, check_user_exists, get_products_with_ratings_and_images, register
 from setup_db import add_default_categories, create_tables
 
 app = Flask(__name__)
@@ -107,6 +107,16 @@ def add_product():
         return make_response(jsonify(result), 201)
     else:
         return make_response(jsonify(result), 500)
+
+@app.route('/products', methods=['GET'])
+def get_all_products_endpoint():
+    try:
+        products = get_products_with_ratings_and_images()
+        return jsonify({'products': products}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     create_tables()
