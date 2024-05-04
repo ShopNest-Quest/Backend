@@ -1,3 +1,4 @@
+#Linux
 curl -X POST http://localhost:5000/register/admin \
 -H "Content-Type: application/json" \
 -d '{"username": "admin_user", "password": "admin123", "email": "admin@example.com"}'
@@ -9,3 +10,26 @@ curl -X POST http://localhost:5000/register/user \
 curl -X POST http://localhost:5000/register/seller \
 -H "Content-Type: application/json" \
 -d '{"username": "seller123", "password": "sellerpass", "email": "seller@example.com", "location": "New York"}'
+
+#Windows
+
+# creating users
+curl -X POST http://localhost:5000/register/user -H "Content-Type: application/json" -d "{\"username\": \"user1\", \"password\": \"password123\", \"email\": \"joh@example.com\"}"
+curl -X POST http://localhost:5000/register/user -H "Content-Type: application/json" -d "{\"username\": \"user2\", \"password\": \"password123\", \"email\": \"jo@example.com\"}"
+
+# creating admin
+curl -X POST http://localhost:5000/register/admin -H "Content-Type: application/json" -d "{\"username\": \"admin_user\", \"password\": \"admin123\", \"email\": \"admin@example.com\"}"
+
+# creating seller
+curl -X POST http://localhost:5000/register/seller -H "Content-Type: application/json" -d "{\"username\": \"seller123\", \"password\": \"sellerpass\", \"email\": \"seller@example.com\", \"location\": \"Muvattupuzha\"}"
+
+# login user
+curl -X POST http://localhost:5000/login/user -H "Content-Type: application/json" -d "{\"username\": \"user2\", \"password\": \"password123\"}"
+
+# login admin
+curl -X POST http://localhost:5000/login/admin -H "Content-Type: application/json" -d "{\"username\": \"admin_user\", \"password\": \"admin123\"}"
+
+# login seller
+curl -X POST http://localhost:5000/login/seller -H "Content-Type: application/json" -d "{\"username\": \"seller123\", \"password\": \"sellerpass\"}"
+
+
