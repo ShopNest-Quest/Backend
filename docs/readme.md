@@ -148,3 +148,56 @@
     ```
 
 ---
+
+## Get All Products
+
+- **Endpoint**: `/products`
+- **Method**: `GET`
+  
+### Description
+
+This endpoint retrieves all products along with their details, including ratings and images.
+
+### Response
+
+- `200 OK`: Products retrieved successfully.
+  - Body:
+    ```json
+    {
+        "products": [
+            {
+                "average_rating": null,
+                "description": "This is a \"sample\" product with special characters",
+                "images": [
+                    "https://example.com/image1.jpg",
+                    "https://example.com/image2.jpg"
+                ],
+                "price": 19.99,
+                "product_id": 1,
+                "product_name": "Sample Product",
+                "seller_username": "seller123"
+            },
+            {
+                "average_rating": 3.5,
+                "description": "This is a sample product.",
+                "images": [
+                    "https://example.com/image1.jpg",
+                    "https://example.com/image2.jpg"
+                ],
+                "price": 29.99,
+                "product_id": 2,
+                "product_name": "Sample Product 2",
+                "seller_username": "seller1234"
+            }
+        ]
+    }
+    ```
+- `500 Internal Server Error`: Failed to retrieve products.
+  - Body:
+    ```json
+    {
+        "error": "<error_message>"
+    }
+    ```
+
+---
