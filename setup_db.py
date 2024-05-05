@@ -121,7 +121,9 @@ def add_default_categories():
         (5, 'Sports & Outdoors'),
         (6, 'Beauty & Personal Care'),
         (7, 'Toys & Games'),
-        (8, 'Health & Wellness')
+        (8, 'Health & Wellness'),
+        (9, 'Shoes'),
+        (10, 'Watches')
     ]
 
     try:
@@ -230,6 +232,7 @@ def create_users():
     cursor.close()
     connection.close()
 
+
 def insert_product_details():
     # Establish database connection
     try:
@@ -243,7 +246,8 @@ def insert_product_details():
             existing_product = cursor.fetchone()
 
             if existing_product:
-                print(f"Product '{product['product_name']}' already exists. Skipping...")
+                print(
+                    f"Product '{product['product_name']}' already exists. Skipping...")
                 continue
 
             # Insert into Products table
@@ -289,34 +293,78 @@ def insert_product_details():
     except mysql.connector.Error as e:
         print(f"Error: {e}")
 
+
 products_details = [
     {
-        'product_name': 'Product A',
-        'price': 99.99,
-        'description': 'High-quality product',
+        'product_name': 'T-shirt for men',
+        'price': 799.00,
+        'description': '''Material composition: 100% Cotton\n
+Pattern: Solid\n
+Fit type: Regular Fit\n
+Sleeve type: Short Sleeve\n
+Collar style: Club Collar\n
+Length: Standard Length\n
+Country of Origin: India\n
+About this item: Super soft premium Tees in solid colors that will not fade. Premium quality 100% Cotton fabric. Mercerized finish for soft hand-feel and luster. High-quality dyes that will last long and not fade. Superior craftsmanship for that clean finish. Neck rib that will never sag.''',
         'seller_username': 'sasi',
-        'category_id': 1,
-        'stock': 20,
-        'image_urls': ['/Backend/images/product-1.jpg', '/Backend/images/galley-3.jpg'],
+        'category_id': 2,
+        'stock': 30,
+        'image_urls': ['https://raw.githubusercontent.com/ShopNest-Quest/Backend/main/images/product-1.jpg'],
         'review': {
             'username': 'Sachin',
-            'rating': 4,
-            'comment': 'Great product!'
+            'rating': 4.4,
+            'comment': "The fabric feels premium and has a great structure. The finishing and collar are amazing. Perfect fit, and the mercerized cotton makes it ideal for golf. Will definitely buy more colors!"
         }
     },
     {
-        'product_name': 'Product B',
-        'price': 49.99,
-        'description': 'Affordable option',
+        'product_name': 'Fossil Dial Watch',
+        'price': 5800,
+        'description': '''This men's quartz watch features a 44-millimeter case diameter with a sleek black metal band. The dial is black, housed in a round case, and displays analog time. It comes with a 24-month manufacturer warranty and is recommended for those seeking a smaller dial size. To start the watch, remove the plastic at the crown. Designed in India, this timepiece offers a stylish and functional accessory for everyday wear.''',
         'seller_username': 'soman',
-        'category_id': 2,
-        'stock': 15,
-        'image_urls': ['/Backend/images/product-2.jpg'],
+        'category_id': 10,
+        'stock': 25,
+        'image_urls': ['https://raw.githubusercontent.com/ShopNest-Quest/Backend/main/images/product-8.jpg'],
         'review': {
             'username': 'Renu',
-            'rating': 5,
-            'comment': 'Excellent!'
+            'rating': 4.9,
+            'comment': 'Value for money or comfortable and design are to much awesome.'
         }
-    }
+    },
+    {
+        'product_name': 'Shoes for men',
+        'price': 1300,
+        'description': '''Material type: Mesh\n
+Closure type: Lace-Up\n
+Heel type: Flat\n
+Water resistance level: Not Water Resistant\n
+Sole material: Rubber\n
+Style: Sneaker\n
+Country of Origin: India\n
+About this item : These versatile men's shoes feature a soft, supportive knitted upper with a lace-up closure for a customizable fit. The Support Tech outsole keeps feet centered and comfortable, while a Memory Foam insole offers personalized arch support and cushioning. With eye-catching style and an Air-Capsule heel for added comfort, these lace-up running shoes complement any semi-formal or casual outfit. They're easy to maintain with regular dusting and a monthly wash with soap and water, ensuring they stay clean and fresh. Ideal for work, leisure, or various occasions, these shoes offer comfort and style wherever you go.''',
+        'seller_username': 'soman',
+        'category_id': 9,
+        'stock': 20,
+        'image_urls': ['https://raw.githubusercontent.com/ShopNest-Quest/Backend/main/images/product-5.jpg'],
+        'review': {
+            'username': 'Sachin',
+            'rating': 4,
+            'comment': 'Nice product, fits properly, memory foam works well, affordable pricing. Recommended'
+        }
+    },
+    {
+        'product_name': 'Track pants',
+        'price': 700,
+        'description': '''
+These men's track pants are made from polyester, offering a comfortable fit with a loose style and ankle-length design. They feature a drawstring closure for easy adjustment and are suitable for machine washing. The casual style and regular fit make them versatile for various activities. Crafted in India, these track pants are a practical addition to any wardrobe, ideal for everyday wear or workouts.''',
+        'seller_username': 'pushpa',
+        'category_id': 2,
+        'stock': 35,
+        'image_urls': ['https://raw.githubusercontent.com/ShopNest-Quest/Backend/main/images/product-12.jpg'],
+        'review': {
+            'username': 'Sachin',
+            'rating': 3,
+            'comment': 'Pants looks good and is pretty comfortable but quality of cloth is pretty thin , these are more like joggers. Worth for money could have been better if material used was thick.'
+        }
+    },
     # Add more products as needed
 ]
