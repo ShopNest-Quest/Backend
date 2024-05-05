@@ -297,7 +297,7 @@ products_details = [
         'seller_username': 'sasi',
         'category_id': 1,
         'stock': 20,
-        'image_urls': ['\Backend\images\product-1', '\Backend\images\galley-3'],
+        'image_urls': ['/Backend/images/product-1.jpg', '/Backend/images/galley-3.jpg'],
         'review': {
             'username': 'Sachin',
             'rating': 4,
@@ -311,7 +311,7 @@ products_details = [
         'seller_username': 'soman',
         'category_id': 2,
         'stock': 15,
-        'image_urls': ['\Backend\images\product-2'],
+        'image_urls': ['/Backend/images/product-2.jpg'],
         'review': {
             'username': 'Renu',
             'rating': 5,
