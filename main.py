@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 from db_functions import add_product_to_db, authenticate, check_user_exists, get_products_with_ratings_and_images, register
-from setup_db import add_default_categories, create_tables
+from setup_db import add_default_categories, create_sellers, create_tables, create_users, insert_product_details
 
 app = Flask(__name__)
 
@@ -121,4 +121,7 @@ def get_all_products_endpoint():
 if __name__ == '__main__':
     create_tables()
     add_default_categories()
+    create_users()
+    create_sellers()
+    insert_product_details()
     app.run(debug=True)

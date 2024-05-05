@@ -1,3 +1,4 @@
+import random
 import mysql.connector
 from db_functions import create_connection
 
@@ -93,7 +94,6 @@ tables = [
 ]
 
 
-
 def create_tables():
     connection = create_connection()
     if connection:
@@ -110,6 +110,7 @@ def create_tables():
         connection.commit()
         cursor.close()
         connection.close()
+
 
 def add_default_categories():
     required_categories = [
@@ -147,3 +148,175 @@ def add_default_categories():
 
     except Exception as e:
         print("Error adding categories:", e)
+
+
+def generate_random_email(username):
+    domains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com']
+    domain = random.choice(domains)
+    return f'{username}@{domain}'
+
+
+def create_sellers():
+    sellers = [
+        {'username': 'Sasi', 'password': 'sasi123',
+            'email': generate_random_email('sasi'), 'location': 'Muvattupuzha'},
+        {'username': 'Soman', 'password': 'soman123',
+            'email': generate_random_email('soman'), 'location': 'Thodupuzha'},
+        {'username': 'Ravi', 'password': 'ravi123',
+            'email': generate_random_email('ravi'), 'location': 'Vazhakulam'},
+        {'username': 'Pushpa', 'password': 'pushpa123',
+            'email': generate_random_email('pushpa'), 'location': 'Muvattupuzha'},
+        {'username': 'Rangan', 'password': 'rangan123',
+            'email': generate_random_email('rangan'), 'location': 'Thodupuzha'},
+        {'username': 'Shami', 'password': 'shami123',
+            'email': generate_random_email('shami'), 'location': 'Vazhakulam'}
+    ]
+
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    for seller in sellers:
+        username = seller['username']
+        password = seller['password']
+        email = seller['email']
+        location = seller['location']
+
+        # Check if seller already exists
+        select_query = "SELECT * FROM Sellers WHERE username = %s"
+        cursor.execute(select_query, (username,))
+        if cursor.fetchone() is None:
+            # Insert seller into Sellers table
+            insert_seller_query = """
+                INSERT INTO Sellers (username, password, location, email_id)
+                VALUES (%s, %s, %s, %s)
+            """
+            cursor.execute(insert_seller_query,
+                           (username, password, location, email))
+        print(f"Seller : {seller['username']} -> created")
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+
+def create_users():
+    users = [
+        {'username': 'Sachin', 'password': 'sachin123',
+            'email': generate_random_email('rahul')},
+        {'username': 'Renu', 'password': 'renu456',
+            'email': generate_random_email('priya')}
+    ]
+
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    for user in users:
+        username = user['username']
+        password = user['password']
+        email = user['email']
+
+        # Check if user already exists
+        select_query = "SELECT * FROM Users WHERE username = %s"
+        cursor.execute(select_query, (username,))
+        if cursor.fetchone() is None:
+            # Insert user into Users table
+            insert_user_query = """
+                INSERT INTO Users (username, password, email_id)
+                VALUES (%s, %s, %s)
+            """
+            cursor.execute(insert_user_query, (username, password, email))
+        print(f"User : {user['username']} -> created")
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+def insert_product_details():
+    # Establish database connection
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+        # Iterate through each product in the provided details
+        for product in products_details:
+            # Check if the product already exists in the Products table
+            query = "SELECT product_id FROM Products WHERE product_name = %s"
+            cursor.execute(query, (product['product_name'],))
+            existing_product = cursor.fetchone()
+
+            if existing_product:
+                print(f"Product '{product['product_name']}' already exists. Skipping...")
+                continue
+
+            # Insert into Products table
+            insert_product_query = """
+                INSERT INTO Products (product_name, price, description, seller_username, category_id, stock)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(insert_product_query, (
+                product['product_name'],
+                product['price'],
+                product['description'],
+                product['seller_username'],
+                product['category_id'],
+                product['stock']
+            ))
+            product_id = cursor.lastrowid
+
+            # Insert product images into ProductImages table
+            for image_url in product['image_urls']:
+                insert_image_query = """
+                    INSERT INTO ProductImages (product_id, image_url)
+                    VALUES (%s, %s)
+                """
+                cursor.execute(insert_image_query, (product_id, image_url))
+
+            # Insert review into Reviews table
+            insert_review_query = """
+                INSERT INTO Reviews (product_id, username, rating, comment)
+                VALUES (%s, %s, %s, %s)
+            """
+            cursor.execute(insert_review_query, (
+                product_id,
+                product['review']['username'],
+                product['review']['rating'],
+                product['review']['comment']
+            ))
+
+            print(f"Product '{product['product_name']}' added successfully.")
+
+        # Commit changes to the database
+        connection.commit()
+
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+
+products_details = [
+    {
+        'product_name': 'Product A',
+        'price': 99.99,
+        'description': 'High-quality product',
+        'seller_username': 'sasi',
+        'category_id': 1,
+        'stock': 20,
+        'image_urls': ['\Backend\images\product-1', '\Backend\images\galley-3'],
+        'review': {
+            'username': 'Sachin',
+            'rating': 4,
+            'comment': 'Great product!'
+        }
+    },
+    {
+        'product_name': 'Product B',
+        'price': 49.99,
+        'description': 'Affordable option',
+        'seller_username': 'soman',
+        'category_id': 2,
+        'stock': 15,
+        'image_urls': ['\Backend\images\product-2'],
+        'review': {
+            'username': 'Renu',
+            'rating': 5,
+            'comment': 'Excellent!'
+        }
+    }
+    # Add more products as needed
+]
