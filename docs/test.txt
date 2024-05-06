@@ -82,3 +82,9 @@ curl --request POST ^
      --url "http://localhost:5000/change_seller_status" ^
      --header "Content-Type: application/json" ^
      --data "{\"username\": \"sasi\",\"isblocked\": 0}"
+
+# add review
+curl --request POST ^
+     --url "http://localhost:5000/add_review" ^
+     --header "Content-Type: application/json" ^
+     --data "{\"username\": \"Sachin\",\"product_id\": 2,\"rating\": 3,\"comment\": \"test review\"}"

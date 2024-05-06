@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, make_response
-from db_functions import add_product_to_db, authenticate, change_order_status, change_seller_blocked_status, change_user_blocked_status, check_user_exists, get_order_details_by_username, get_orders_sold_by_seller, get_products_sold_by_seller, get_products_with_ratings_and_images, get_reviews_by_product_id, get_users_or_sellers_with_blocked_status, insert_order, register, update_product_stock
+from db_functions import add_product_to_db, add_review_to_database, authenticate, change_order_status, change_seller_blocked_status, change_user_blocked_status, check_user_exists, get_order_details_by_username, get_orders_sold_by_seller, get_products_sold_by_seller, get_products_with_ratings_and_images, get_reviews_by_product_id, get_users_or_sellers_with_blocked_status, insert_order, register, update_product_stock
 from setup_db import add_default_categories, create_sellers, create_tables, create_users, insert_product_details
 from flask_cors import CORS
 
@@ -245,6 +245,28 @@ def get_sellers():
         return jsonify(sellers=sellers_data)
     else:
         return jsonify(error="Failed to retrieve sellers"), 500
+
+@app.route('/add_review', methods=['POST'])
+def add_review():
+    """Endpoint to add a review to the 'reviews' table."""
+    try:
+        review_data = request.json
+        product_id = review_data.get('product_id')
+        username = review_data.get('username')
+        rating = review_data.get('rating')
+        comment = review_data.get('comment')
+
+        if not all([product_id, username, rating]):
+            return jsonify(error="Missing required fields"), 400
+
+        success, message = add_review_to_database(product_id, username, rating, comment)
+        if success:
+            return jsonify(message=message), 201
+        else:
+            return jsonify(error=message), 500
+
+    except Exception as e:
+        return jsonify(error=f"An unexpected error occurred: {e}"), 500
 
 if __name__ == '__main__':
     create_tables()

@@ -468,3 +468,27 @@ def get_users_or_sellers_with_blocked_status(user_type):
     except Error as e:
         print(f"Error retrieving {user_type}: {e}")
         return None
+
+def add_review_to_database(product_id, username, rating, comment):
+    """Add a review to the 'reviews' table."""
+    try:
+        connection = create_connection()
+        if connection is None:
+            return False, "Failed to connect to database"
+
+        cursor = connection.cursor()
+        insert_query = """
+            INSERT INTO reviews (product_id, username, rating, comment)
+            VALUES (%s, %s, %s, %s)
+        """
+        review_values = (product_id, username, rating, comment)
+        cursor.execute(insert_query, review_values)
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        return True, "Review added successfully"
+
+    except Error as e:
+        return False, f"Error adding review: {e}"
