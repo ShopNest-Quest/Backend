@@ -202,7 +202,7 @@ This endpoint retrieves all products along with their details, including ratings
 
 ---
 
-# Place Order
+## Place Order
 
 - **Endpoint**: `/place_order`
 - **Method**: `POST`
@@ -219,10 +219,11 @@ This endpoint retrieves all products along with their details, including ratings
   - Body:
     ```json
     {
-        "message": "Order added successfully"
+        "message": "Order added successfully",
+        "total_price": <total_price>
     }
     ```
-- `500 Internal Server Error`: Failed to place order.
+- `500 Internal Server Error`: Failed to place the order.
   - Body:
     ```json
     {

@@ -153,10 +153,12 @@ def insert_order(customer_username, product_id, quantity):
             INSERT INTO Orders (customer_username, product_id, quantity)
             VALUES (%s, %s, %s)
         """, (customer_username, product_id, quantity))
+        cursor.execute("SELECT price FROM Products WHERE product_id = %s", (product_id,))
+        product_price = cursor.fetchone()[0]
+        total_price = product_price * quantity
         connection.commit()
         cursor.close()
-
-        return True, "Order added successfully"
+        return True, {"message" : "Order added successfully", 'total_price': total_price}
 
     except Error as e:
         return False, f"Error: {e}"
