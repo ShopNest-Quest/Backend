@@ -40,12 +40,18 @@ curl --request POST ^
 
 # add place order
 curl --request POST ^
-     --url "http://localhost:5000/place_order" ^
+     --url "https://shopnest.pythonanywhere.com/place_order" ^
      --header "Content-Type: application/json" ^
      --data "{\"customer_username\": \"Sachin\", \"product_id\": 1, \"quantity\": 5}"
 
 # get user orders
 curl --request GET ^
-     --url "http://localhost:5000/get_user_orders" ^
+     --url "https://shopnest.pythonanywhere.com/get_user_orders" ^
      --header "Content-Type: application/json" ^
      --data "{\"customer_username\": \"Sachin\"}"
+
+# get seller orders
+curl --request GET ^
+     --url "http://localhost:5000/get_seller_orders" ^
+     --header "Content-Type: application/json" ^
+     --data "{\"seller_username\": \"sasi\"}"

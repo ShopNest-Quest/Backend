@@ -203,3 +203,79 @@ def get_order_details_by_username(customer_username):
 
     except Error as e:
         return False, f"Error: {e}"
+
+def get_orders_sold_by_seller(seller_username):
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        # Fetch order details for the specified seller_username
+        query = """
+            SELECT o.order_date, p.product_name, p.price, o.quantity, o.total_price, o.status, i.image_url
+            FROM Orders o
+            JOIN Products p ON o.product_id = p.product_id
+            LEFT JOIN ProductImages i ON p.product_id = i.product_id
+            WHERE p.seller_username = %s
+        """
+        cursor.execute(query, (seller_username,))
+        order_details = cursor.fetchall()
+
+        if not order_details:
+            return False, "No orders found for this seller"
+
+        # Format the order details response
+        formatted_orders = []
+        for order in order_details:
+            formatted_order = {
+                "order_date": order['order_date'].strftime('%Y-%m-%d %H:%M:%S'),
+                "product_name": order['product_name'],
+                "price": float(order['price']),
+                "quantity": order['quantity'],
+                "total_price": float(order['total_price']),
+                "status": order['status']
+            }
+            if order['image_url']:
+                formatted_order["image_url"] = order['image_url']
+            formatted_orders.append(formatted_order)
+
+        cursor.close()
+        return True, formatted_orders
+
+    except Error as e:
+        return False, f"Error: {e}"
+    
+def get_reviews_by_product_id(product_id):
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        # Fetch reviews for the specified product_id
+        query = """
+            SELECT r.review_id, r.username, r.rating, r.comment, r.review_date
+            FROM Reviews r
+            JOIN Users u ON r.username = u.username
+            WHERE r.product_id = %s
+        """
+        cursor.execute(query, (product_id,))
+        reviews = cursor.fetchall()
+
+        if not reviews:
+            return False, "No reviews found for this product"
+
+        # Format the review details response
+        formatted_reviews = []
+        for review in reviews:
+            formatted_review = {
+                "review_id": review['review_id'],
+                "username": review['username'],
+                "rating": review['rating'],
+                "comment": review['comment'],
+                "review_date": review['review_date'].strftime('%Y-%m-%d %H:%M:%S')
+            }
+            formatted_reviews.append(formatted_review)
+
+        cursor.close()
+        return True, formatted_reviews
+
+    except Error as e:
+        return False, f"Error: {e}"

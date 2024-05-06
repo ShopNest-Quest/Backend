@@ -232,3 +232,140 @@ This endpoint retrieves all products along with their details, including ratings
     ```
 
 ---
+## Get User Orders
+
+- **Endpoint**: `/get_user_orders`
+- **Method**: `GET`
+  
+### Parameters
+
+- `customer_username` (string): Username of the customer whose orders are to be retrieved.
+
+### Response
+
+- `200 OK`: Orders retrieved successfully.
+  - Body:
+    ```json
+    {
+        "orders": [
+            {
+                "order_date": "<order_date>",
+                "product_name": "<product_name>",
+                "price": <price>,
+                "quantity": <quantity>,
+                "total_price": <total_price>,
+                "status": "<status>",
+                "image_url": "<image_url>"
+            },
+            {
+                "order_date": "<order_date>",
+                "product_name": "<product_name>",
+                "price": <price>,
+                "quantity": <quantity>,
+                "total_price": <total_price>,
+                "status": "<status>",
+                "image_url": "<image_url>"
+            },
+            ...
+        ]
+    }
+    ```
+- `500 Internal Server Error`: Failed to retrieve orders.
+  - Body:
+    ```json
+    {
+        "message": "<error_message>"
+    }
+    ```
+
+---
+## Get Seller Orders
+
+- **Endpoint**: `/get_seller_orders`
+- **Method**: `GET`
+  
+### Parameters
+
+- `seller_username` (string): Username of the seller whose orders are to be retrieved.
+
+### Response
+
+- `200 OK`: Orders retrieved successfully.
+  - Body:
+    ```json
+    {
+        "message": [
+            {
+                "order_date": "<formatted_order_date>",
+                "product_name": "<product_name>",
+                "price": <price>,
+                "quantity": <quantity>,
+                "total_price": <total_price>,
+                "status": "<status>",
+                "image_url": "<image_url>"
+            },
+            {
+                "order_date": "<formatted_order_date>",
+                "product_name": "<product_name>",
+                "price": <price>,
+                "quantity": <quantity>,
+                "total_price": <total_price>,
+                "status": "<status>",
+                "image_url": "<image_url>"
+            },
+            ...
+        ]
+    }
+    ```
+- `500 Internal Server Error`: Failed to retrieve orders.
+  - Body:
+    ```json
+    {
+        "message": "<error_message>"
+    }
+    ```
+
+---
+## Get Product Reviews
+
+- **Endpoint**: `/product_reviews`
+- **Method**: `GET`
+  
+### Parameters
+
+- `product_id` (integer): ID of the product whose reviews are to be retrieved.
+
+### Response
+
+- `200 OK`: Reviews retrieved successfully.
+  - Body:
+    ```json
+    {
+        "reviews": [
+            {
+                "review_id": <review_id>,
+                "username": "<username>",
+                "rating": <rating>,
+                "comment": "<comment>",
+                "review_date": "<formatted_review_date>"
+            },
+            {
+                "review_id": <review_id>,
+                "username": "<username>",
+                "rating": <rating>,
+                "comment": "<comment>",
+                "review_date": "<formatted_review_date>"
+            },
+            ...
+        ]
+    }
+    ```
+- `404 Not Found`: No reviews found for the specified product.
+  - Body:
+    ```json
+    {
+        "message": "No reviews found for this product"
+    }
+    ```
+
+---
