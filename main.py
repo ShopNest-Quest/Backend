@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, make_response
-from db_functions import add_product_to_db, authenticate, check_user_exists, get_products_with_ratings_and_images, insert_order, register
+from db_functions import add_product_to_db, authenticate, check_user_exists, get_order_details_by_username, get_products_with_ratings_and_images, insert_order, register
 from setup_db import add_default_categories, create_sellers, create_tables, create_users, insert_product_details
 
 app = Flask(__name__)
@@ -129,6 +129,18 @@ def place_order():
 
     if success:
         return jsonify({"message": message}), 200
+    else:
+        return jsonify({"message": message}), 500
+
+@app.route('/get_user_orders', methods=['GET'])
+def get_user_orders():
+    data = request.get_json()
+    customer_username = data['customer_username']
+
+    success, message = get_order_details_by_username(customer_username)
+
+    if success:
+        return jsonify(message), 200
     else:
         return jsonify({"message": message}), 500
 

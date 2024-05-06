@@ -44,3 +44,8 @@ curl --request POST ^
      --header "Content-Type: application/json" ^
      --data "{\"customer_username\": \"Sachin\", \"product_id\": 1, \"quantity\": 5}"
 
+# get user orders
+curl --request GET ^
+     --url "http://localhost:5000/get_user_orders" ^
+     --header "Content-Type: application/json" ^
+     --data "{\"customer_username\": \"Sachin\"}"

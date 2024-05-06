@@ -162,3 +162,44 @@ def insert_order(customer_username, product_id, quantity):
 
     except Error as e:
         return False, f"Error: {e}"
+
+def get_order_details_by_username(customer_username):
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        # Fetch order details for the given customer_username
+        query = """
+            SELECT o.order_date, p.product_name, p.price, o.quantity, o.total_price, o.status, i.image_url
+            FROM Orders o
+            JOIN Products p ON o.product_id = p.product_id
+            LEFT JOIN ProductImages i ON p.product_id = i.product_id
+            WHERE o.customer_username = %s
+        """
+        cursor.execute(query, (customer_username,))
+        order_details = cursor.fetchall()
+
+        if not order_details:
+            return False, "No orders found for this customer"
+
+        # Format the order details response
+        formatted_orders = []
+        for order in order_details:
+            formatted_order = {
+                "order_date": order[0],           # Access by index 0
+                "product_name": order[1],         # Access by index 1
+                "price": float(order[2]),         # Access by index 2
+                "quantity": order[3],             # Access by index 3
+                "total_price": float(order[4]),   # Access by index 4
+                "status": order[5]                # Access by index 5
+            }
+            if order[6]:  # Check if image_url is not None
+                formatted_order["image_url"] = order[6]
+
+            formatted_orders.append(formatted_order)
+
+        cursor.close()
+        return True, {'orders': formatted_orders}
+
+    except Error as e:
+        return False, f"Error: {e}"
