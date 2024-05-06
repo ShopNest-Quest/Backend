@@ -450,3 +450,31 @@ This endpoint retrieves all products along with their details, including ratings
     ```
 
 ---
+## Update Product Stock
+
+- **Endpoint**: `/update_product_stock`
+- **Method**: `POST`
+  
+### Parameters
+
+- `product_id` (integer): ID of the product to update.
+- `new_stock` (integer): New stock quantity for the product.
+
+### Response
+
+- `200 OK`: Product stock updated successfully.
+  - Body:
+    ```json
+    {
+        "message": "Product stock updated to <new_stock>"
+    }
+    ```
+- `404 Not Found`: Product not found with the specified `product_id`.
+  - Body:
+    ```json
+    {
+        "message": "Product with product_id <product_id> not found"
+    }
+    ```
+
+---

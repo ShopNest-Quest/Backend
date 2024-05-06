@@ -359,3 +359,28 @@ def get_products_sold_by_seller(seller_username):
     except Error as e:
         # Log the error or handle it as needed
         return False,f"Error: {e}"
+    
+def update_product_stock(product_id, new_stock):
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        # Update product stock in the Products table
+        update_query = """
+            UPDATE Products
+            SET stock = %s
+            WHERE product_id = %s
+        """
+        cursor.execute(update_query, (new_stock, product_id))
+        connection.commit()
+
+        # Check if any rows were affected by the update
+        if cursor.rowcount == 0:
+            cursor.close()
+            return False, f"Product with product_id {product_id} not found"
+
+        cursor.close()
+        return True, f"Product stock updated to {new_stock}"
+
+    except Error as e:
+        return False, f"Error: {e}"

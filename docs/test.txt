@@ -61,3 +61,9 @@ curl --request POST ^
      --url "http://localhost:5000/update_order_status" ^
      --header "Content-Type: application/json" ^
      --data "{\"order_id\": 1,\"new_status\": \"shipped\"}"
+
+# change stock
+curl --request POST ^
+     --url "http://localhost:5000/update_product_stock" ^
+     --header "Content-Type: application/json" ^
+     --data "{\"product_id\": 4,\"new_stock\": 55}"
