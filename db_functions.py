@@ -266,11 +266,11 @@ def get_reviews_by_product_id(product_id):
         formatted_reviews = []
         for review in reviews:
             formatted_review = {
-                "review_id": review['review_id'],
-                "username": review['username'],
-                "rating": review['rating'],
-                "comment": review['comment'],
-                "review_date": review['review_date'].strftime('%Y-%m-%d %H:%M:%S')
+                "review_id": review[0],
+                "username": review[1],
+                "rating": review[2],
+                "comment": review[3],
+                "review_date": review[4].strftime('%Y-%m-%d %H:%M:%S')
             }
             formatted_reviews.append(formatted_review)
 
