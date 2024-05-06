@@ -76,3 +76,9 @@ curl --request POST ^
      --url "http://localhost:5000/change_user_status" ^
      --header "Content-Type: application/json" ^
      --data "{\"username\": \"Sachin\",\"isblocked\": 0}"
+
+# change status seller
+curl --request POST ^
+     --url "http://localhost:5000/change_seller_status" ^
+     --header "Content-Type: application/json" ^
+     --data "{\"username\": \"sasi\",\"isblocked\": 0}"

@@ -506,3 +506,31 @@ This endpoint retrieves all products along with their details, including ratings
     ```
 
 ---
+## Change Seller Blocked Status
+
+- **Endpoint**: `/change_seller_status`
+- **Method**: `POST`
+  
+### Parameters
+
+- `username` (string): Username of the user whose blocked status is to be updated.
+- `isblocked` (int): New blocked status for the user (`1` to block, `0` to unblock).
+
+### Response
+
+- `200 OK`: User blocked status updated successfully.
+  - Body:
+    ```json
+    {
+        "message": "Seller '<username>' blocked status updated successfully"
+    }
+    ```
+- `404 Not Found`: User not found with the specified `username`.
+  - Body:
+    ```json
+    {
+        "message": "Seller with username '<username>' not found"
+    }
+    ```
+
+---

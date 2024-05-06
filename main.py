@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, make_response
-from db_functions import add_product_to_db, authenticate, change_order_status, change_user_blocked_status, check_user_exists, get_order_details_by_username, get_orders_sold_by_seller, get_products_sold_by_seller, get_products_with_ratings_and_images, get_reviews_by_product_id, insert_order, register, update_product_stock
+from db_functions import add_product_to_db, authenticate, change_order_status, change_seller_blocked_status, change_user_blocked_status, check_user_exists, get_order_details_by_username, get_orders_sold_by_seller, get_products_sold_by_seller, get_products_with_ratings_and_images, get_reviews_by_product_id, insert_order, register, update_product_stock
 from setup_db import add_default_categories, create_sellers, create_tables, create_users, insert_product_details
 
 app = Flask(__name__)
@@ -206,6 +206,19 @@ def change_user_status():
     status = data['isblocked']
 
     success, message = change_user_blocked_status(username, status)
+
+    if success:
+        return jsonify({"message": message}), 200
+    else:
+        return jsonify({"message": message}), 404
+
+@app.route('/change_seller_status', methods=['POST'])
+def change_seller_status():
+    data = request.get_json()
+    username = data['username']
+    status = data['isblocked']
+
+    success, message = change_seller_blocked_status(username, status)
 
     if success:
         return jsonify({"message": message}), 200
