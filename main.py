@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, make_response
-from db_functions import add_product_to_db, authenticate, check_user_exists, get_products_with_ratings_and_images, register
+from db_functions import add_product_to_db, authenticate, check_user_exists, get_products_with_ratings_and_images, insert_order, register
 from setup_db import add_default_categories, create_sellers, create_tables, create_users, insert_product_details
 
 app = Flask(__name__)
@@ -117,6 +117,20 @@ def get_all_products_endpoint():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
+@app.route('/place_order', methods=['POST'])
+def place_order():
+    data = request.get_json()
+    customer_username = data['customer_username']
+    product_id = data['product_id']
+    quantity = data['quantity']
+
+    success, message = insert_order(customer_username, product_id, quantity)
+
+    if success:
+        return jsonify({"message": message}), 200
+    else:
+        return jsonify({"message": message}), 500
 
 if __name__ == '__main__':
     create_tables()

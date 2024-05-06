@@ -82,14 +82,30 @@ tables = [
     """,
     """
     CREATE TRIGGER IF NOT EXISTS before_insert_order
-    BEFORE INSERT ON Orders
-    FOR EACH ROW
-    BEGIN
-        DECLARE product_price DECIMAL(10, 2);
-        SELECT price INTO product_price FROM Products WHERE product_id = NEW.product_id;
-        SET NEW.price = product_price;
-        SET NEW.total_price = NEW.price * NEW.quantity;
-    END
+BEFORE INSERT ON Orders
+FOR EACH ROW
+BEGIN
+    DECLARE product_price DECIMAL(10, 2);
+    DECLARE product_stock INT;
+
+    -- Retrieve product price and stock quantity
+    SELECT price, stock INTO product_price, product_stock
+    FROM Products
+    WHERE product_id = NEW.product_id;
+
+    -- Set order price and total price based on product price and quantity
+    SET NEW.price = product_price;
+    SET NEW.total_price = NEW.price * NEW.quantity;
+
+    -- Update product stock quantity
+    IF product_stock >= NEW.quantity THEN
+        UPDATE Products
+        SET stock = product_stock - NEW.quantity
+        WHERE product_id = NEW.product_id;
+    ELSE
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Insufficient stock';
+    END IF;
+END
     """
 ]
 

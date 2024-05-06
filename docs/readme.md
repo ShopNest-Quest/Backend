@@ -201,3 +201,33 @@ This endpoint retrieves all products along with their details, including ratings
     ```
 
 ---
+
+# Place Order
+
+- **Endpoint**: `/place_order`
+- **Method**: `POST`
+  
+### Parameters
+
+- `customer_username` (string): Username of the customer placing the order.
+- `product_id` (integer): ID of the product being ordered.
+- `quantity` (integer): Quantity of the product being ordered.
+
+### Response
+
+- `200 OK`: Order placed successfully.
+  - Body:
+    ```json
+    {
+        "message": "Order added successfully"
+    }
+    ```
+- `500 Internal Server Error`: Failed to place order.
+  - Body:
+    ```json
+    {
+        "message": "<error_message>"
+    }
+    ```
+
+---

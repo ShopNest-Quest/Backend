@@ -111,7 +111,7 @@ def get_products_with_ratings_and_images():
         # SQL query to retrieve all products with their ratings and images
         query = """
             SELECT p.product_id, p.product_name, p.price, p.description, p.seller_username,
-                   AVG(r.rating) AS average_rating, GROUP_CONCAT(pi.image_url) AS images
+                   AVG(r.rating) AS average_rating, GROUP_CONCAT(pi.image_url) AS images,p.stock
             FROM Products p
             LEFT JOIN Reviews r ON p.product_id = r.product_id
             LEFT JOIN ProductImages pi ON p.product_id = pi.product_id
@@ -130,7 +130,8 @@ def get_products_with_ratings_and_images():
                 'description': product[3],
                 'seller_username': product[4],
                 'average_rating': float(product[5]) if product[5] is not None else None,
-                'images': product[6].split(',') if product[6] is not None else []
+                'images': product[6].split(',') if product[6] is not None else [],
+                'stock' : product[7]
             }
             products.append(product_dict)
 
@@ -142,3 +143,20 @@ def get_products_with_ratings_and_images():
     except Exception as e:
         # Log the error or handle it as needed
         raise e
+
+def insert_order(customer_username, product_id, quantity):
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+        # Insert into Orders table
+        cursor.execute("""
+            INSERT INTO Orders (customer_username, product_id, quantity)
+            VALUES (%s, %s, %s)
+        """, (customer_username, product_id, quantity))
+        connection.commit()
+        cursor.close()
+
+        return True, "Order added successfully"
+
+    except Error as e:
+        return False, f"Error: {e}"
