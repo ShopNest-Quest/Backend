@@ -103,20 +103,25 @@ def add_product_to_db(product_data):
         print("Error adding product:", e)
         return {"success": False, "message": "Failed to add product"}
     
-def get_products_with_ratings_and_images():
+def get_products_with_ratings_and_images(location=None):
     try:
         connection = create_connection()
         cursor = connection.cursor()
 
-        # SQL query to retrieve all products with their ratings and images
+        # SQL query to retrieve products with ratings, images, and filter by seller location
         query = """
             SELECT p.product_id, p.product_name, p.price, p.description, p.seller_username,
-                   AVG(r.rating) AS average_rating, GROUP_CONCAT(pi.image_url) AS images,p.stock
+                   AVG(r.rating) AS average_rating, GROUP_CONCAT(pi.image_url) AS images, p.stock
             FROM Products p
             LEFT JOIN Reviews r ON p.product_id = r.product_id
             LEFT JOIN ProductImages pi ON p.product_id = pi.product_id
-            GROUP BY p.product_id
+            JOIN Sellers s ON p.seller_username = s.username
         """
+
+        if location:
+            query += f" WHERE s.location = '{location}'"
+
+        query += " GROUP BY p.product_id"
 
         cursor.execute(query)
         products_data = cursor.fetchall()
@@ -131,7 +136,7 @@ def get_products_with_ratings_and_images():
                 'seller_username': product[4],
                 'average_rating': float(product[5]) if product[5] is not None else None,
                 'images': product[6].split(',') if product[6] is not None else [],
-                'stock' : product[7]
+                'stock': product[7]
             }
             products.append(product_dict)
 
@@ -143,6 +148,7 @@ def get_products_with_ratings_and_images():
     except Exception as e:
         # Log the error or handle it as needed
         raise e
+
 
 def insert_order(customer_username, product_id, quantity):
     try:

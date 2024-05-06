@@ -114,7 +114,8 @@ def add_product():
 @app.route('/products', methods=['GET'])
 def get_all_products_endpoint():
     try:
-        products = get_products_with_ratings_and_images()
+        location = request.args.get('location')
+        products = get_products_with_ratings_and_images(location)
         return jsonify({'products': products}), 200
 
     except Exception as e:
