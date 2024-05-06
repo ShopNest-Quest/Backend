@@ -601,3 +601,40 @@ This endpoint retrieves all products along with their details, including ratings
     ```
 
 ---
+# Add Review
+
+- **Endpoint**: `/add_review`
+- **Method**: `POST`
+  
+### Request Body
+
+- `product_id` (integer): ID of the product being reviewed.
+- `username` (string): Username of the reviewer.
+- `rating` (integer): Rating given for the product (1-5).
+- `comment` (string, optional): Review comment.
+
+### Response
+
+- `201 Created`: Review added successfully.
+  - Body:
+    ```json
+    {
+        "message": "Review added successfully"
+    }
+    ```
+- `400 Bad Request`: Missing required fields in the request body.
+  - Body:
+    ```json
+    {
+        "error": "Missing required fields"
+    }
+    ```
+- `500 Internal Server Error`: Failed to add the review due to a server error.
+  - Body:
+    ```json
+    {
+        "error": "An unexpected error occurred: <error_message>"
+    }
+    ```
+
+---
