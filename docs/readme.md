@@ -373,3 +373,31 @@ This endpoint retrieves all products along with their details, including ratings
     ```
 
 ---
+## Update Order Status
+
+- **Endpoint**: `/update_order_status`
+- **Method**: `POST`
+  
+### Parameters
+
+- `order_id` (integer): ID of the order to be updated.
+- `new_status` (string): New status to set for the order. Allowed values: `'pending'`, `'shipped'`, `'delivered'`.
+
+### Response
+
+- `200 OK`: Order status updated successfully.
+  - Body:
+    ```json
+    {
+        "message": "Order status updated to <new_status>"
+    }
+    ```
+- `404 Not Found`: Order not found with the specified `order_id`.
+  - Body:
+    ```json
+    {
+        "message": "Order with order_id <order_id> not found"
+    }
+    ```
+
+---

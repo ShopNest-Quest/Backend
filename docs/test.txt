@@ -55,3 +55,9 @@ curl --request GET ^
      --url "http://localhost:5000/get_seller_orders" ^
      --header "Content-Type: application/json" ^
      --data "{\"seller_username\": \"sasi\"}"
+
+# change order status
+curl --request POST ^
+     --url "http://localhost:5000/update_order_status" ^
+     --header "Content-Type: application/json" ^
+     --data "{\"order_id\": 1,\"new_status\": \"shipped\"}"

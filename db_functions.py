@@ -292,3 +292,28 @@ def get_reviews_by_product_id(product_id):
 
     except Error as e:
         return False, f"Error: {e}"
+
+def change_order_status(order_id, new_status):
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        # Update order status in the Orders table
+        update_query = """
+            UPDATE Orders
+            SET status = %s
+            WHERE order_id = %s
+        """
+        cursor.execute(update_query, (new_status, order_id))
+        connection.commit()
+
+        # Check if any rows were affected by the update
+        if cursor.rowcount == 0:
+            cursor.close()
+            return False, f"Order with order_id {order_id} not found"
+
+        cursor.close()
+        return True, f"Order status updated to {new_status}"
+
+    except Error as e:
+        return False, f"Error: {e}"
