@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, make_response
-from db_functions import add_product_to_db, authenticate, change_order_status, check_user_exists, get_order_details_by_username, get_orders_sold_by_seller, get_products_with_ratings_and_images, get_reviews_by_product_id, insert_order, register
+from db_functions import add_product_to_db, authenticate, change_order_status, check_user_exists, get_order_details_by_username, get_orders_sold_by_seller, get_products_sold_by_seller, get_products_with_ratings_and_images, get_reviews_by_product_id, insert_order, register
 from setup_db import add_default_categories, create_sellers, create_tables, create_users, insert_product_details
 
 app = Flask(__name__)
@@ -175,6 +175,16 @@ def update_order_status():
         return jsonify({"message": message}), 200
     else:
         return jsonify({"message": message}), 404
+
+@app.route('/get_seller_products', methods=['GET'])
+def get_seller_products():
+    seller_username = request.args.get('seller_username')
+    success, message = get_products_sold_by_seller(seller_username)
+
+    if success:
+        return jsonify({"products" :message}), 200
+    else:
+        return jsonify({"message": message}), 500
 
 if __name__ == '__main__':
     create_tables()

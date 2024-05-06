@@ -401,3 +401,52 @@ This endpoint retrieves all products along with their details, including ratings
     ```
 
 ---
+## Get Seller Products
+
+- **Endpoint**: `/get_seller_products`
+- **Method**: `GET`
+  
+### Parameters
+
+- `seller_username` (string): Username of the seller whose products are to be retrieved.
+
+### Response
+
+- `200 OK`: Products retrieved successfully.
+  - Body:
+    ```json
+    {
+        "products": [
+            {
+                "product_id": <product_id>,
+                "product_name": "<product_name>",
+                "price": <price>,
+                "description": "<description>",
+                "seller_username": "<seller_username>",
+                "average_rating": <average_rating>,
+                "images": ["<image_url1>", "<image_url2>", ...],
+                "stock": <stock>
+            },
+            {
+                "product_id": <product_id>,
+                "product_name": "<product_name>",
+                "price": <price>,
+                "description": "<description>",
+                "seller_username": "<seller_username>",
+                "average_rating": <average_rating>,
+                "images": ["<image_url1>", "<image_url2>", ...],
+                "stock": <stock>
+            },
+            ...
+        ]
+    }
+    ```
+- `500 Internal Server Error`: Failed to retrieve products.
+  - Body:
+    ```json
+    {
+        "message": "<error_message>"
+    }
+    ```
+
+---

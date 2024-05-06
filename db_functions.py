@@ -317,3 +317,45 @@ def change_order_status(order_id, new_status):
 
     except Error as e:
         return False, f"Error: {e}"
+
+def get_products_sold_by_seller(seller_username):
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        # SQL query to retrieve products sold by the specified seller with ratings and images
+        query = """
+            SELECT p.product_id, p.product_name, p.price, p.description, p.seller_username,
+                   AVG(r.rating) AS average_rating, GROUP_CONCAT(pi.image_url) AS images, p.stock
+            FROM Products p
+            LEFT JOIN Reviews r ON p.product_id = r.product_id
+            LEFT JOIN ProductImages pi ON p.product_id = pi.product_id
+            WHERE p.seller_username = %s
+            GROUP BY p.product_id
+        """
+
+        cursor.execute(query, (seller_username,))
+        products_data = cursor.fetchall()
+
+        products = []
+        for product in products_data:
+            product_dict = {
+                'product_id': product[0],
+                'product_name': product[1],
+                'price': float(product[2]),
+                'description': product[3],
+                'seller_username': product[4],
+                'average_rating': float(product[5]) if product[5] is not None else None,
+                'images': product[6].split(',') if product[6] is not None else [],
+                'stock': product[7]
+            }
+            products.append(product_dict)
+
+        cursor.close()
+        connection.close()
+
+        return True,products
+
+    except Error as e:
+        # Log the error or handle it as needed
+        return False,f"Error: {e}"
