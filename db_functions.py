@@ -384,3 +384,29 @@ def update_product_stock(product_id, new_stock):
 
     except Error as e:
         return False, f"Error: {e}"
+
+def change_user_blocked_status(username, is_blocked):
+    """Change the 'isBlocked' status of a user in the Users table."""
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        # Update 'isBlocked' status for the specified user
+        update_query = """
+            UPDATE Users
+            SET isBlocked = %s
+            WHERE username = %s
+        """
+        cursor.execute(update_query, (is_blocked, username))
+        connection.commit()
+
+        # Check if any rows were affected by the update
+        if cursor.rowcount == 0:
+            cursor.close()
+            return False, f"User with username '{username}' not found"
+
+        cursor.close()
+        return True, f"User '{username}' blocked status updated successfully"
+
+    except Error as e:
+        return False, f"Error: {e}"
