@@ -211,7 +211,7 @@ def get_orders_sold_by_seller(seller_username):
 
         # Fetch order details for the specified seller_username
         query = """
-            SELECT o.order_date, p.product_name, p.price, o.quantity, o.total_price, o.status, i.image_url, p.product_id
+            SELECT o.order_date, p.product_name, p.price, o.quantity, o.total_price, o.status, i.image_url, p.product_id,o.order_id
             FROM Orders o
             JOIN Products p ON o.product_id = p.product_id
             LEFT JOIN ProductImages i ON p.product_id = i.product_id
@@ -233,6 +233,7 @@ def get_orders_sold_by_seller(seller_username):
             total_price = float(order[4])
             status = order[5]
             product_id = order[7]
+            order_id = order[8]
 
             formatted_order = {
                 "order_date": order_date,
@@ -241,7 +242,8 @@ def get_orders_sold_by_seller(seller_username):
                 "quantity": quantity,
                 "total_price": total_price,
                 "status": status,
-                "product_id": product_id
+                "product_id": product_id,
+                "order_id" : order_id
             }
             if order[6]:  # Check if image_url is not None
                 formatted_order["image_url"] = order[6]

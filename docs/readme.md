@@ -303,7 +303,8 @@ This endpoint retrieves all products along with their details, including ratings
                 "total_price": <total_price>,
                 "status": "<status>",
                 "image_url": "<image_url>",
-                "product_id": <product_id>
+                "product_id": <product_id>,
+                "order_id" : <order_id>
             },
             {
                 "order_date": "<formatted_order_date>",
@@ -314,6 +315,7 @@ This endpoint retrieves all products along with their details, including ratings
                 "status": "<status>",
                 "image_url": "<image_url>",
                 "product_id": <product_id>,
+                "order_id" : <order_id>
             },
             ...
         ]
