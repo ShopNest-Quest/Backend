@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify, make_response
-from db_functions import add_product_to_db, authenticate, change_order_status, change_seller_blocked_status, change_user_blocked_status, check_user_exists, get_order_details_by_username, get_orders_sold_by_seller, get_products_sold_by_seller, get_products_with_ratings_and_images, get_reviews_by_product_id, insert_order, register, update_product_stock
+from db_functions import add_product_to_db, authenticate, change_order_status, change_seller_blocked_status, change_user_blocked_status, check_user_exists, get_order_details_by_username, get_orders_sold_by_seller, get_products_sold_by_seller, get_products_with_ratings_and_images, get_reviews_by_product_id, get_users_or_sellers_with_blocked_status, insert_order, register, update_product_stock
 from setup_db import add_default_categories, create_sellers, create_tables, create_users, insert_product_details
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "http://127.0.0.1:5500"}})
 
 @app.route('/register/admin', methods=['POST'])
 def register_admin():
@@ -224,6 +227,24 @@ def change_seller_status():
         return jsonify({"message": message}), 200
     else:
         return jsonify({"message": message}), 404
+
+@app.route('/get_users', methods=['GET'])
+def get_users():
+    """Route to retrieve users with their 'isBlocked' status."""
+    users_data = get_users_or_sellers_with_blocked_status("users")
+    if users_data is not None:
+        return jsonify(users=users_data)
+    else:
+        return jsonify(error="Failed to retrieve users"), 500
+
+@app.route('/get_sellers', methods=['GET'])
+def get_sellers():
+    """Route to retrieve sellers with their 'isBlocked' status."""
+    sellers_data = get_users_or_sellers_with_blocked_status("sellers")
+    if sellers_data is not None:
+        return jsonify(sellers=sellers_data)
+    else:
+        return jsonify(error="Failed to retrieve sellers"), 500
 
 if __name__ == '__main__':
     create_tables()

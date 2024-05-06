@@ -436,3 +436,35 @@ def change_seller_blocked_status(username, is_blocked):
 
     except Error as e:
         return False, f"Error: {e}"
+
+def get_users_or_sellers_with_blocked_status(user_type):
+    """Retrieve users or sellers along with their 'isBlocked' status."""
+    try:
+        connection = create_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        # Determine the query based on user_type ("users" or "sellers")
+        if user_type == "users":
+            query = """
+                SELECT username, isBlocked
+                FROM Users
+            """
+        elif user_type == "sellers":
+            query = """
+                SELECT username, isBlocked
+                FROM Sellers
+            """
+        else:
+            return None  # Invalid user_type
+
+        cursor.execute(query)
+        data = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        return data
+
+    except Error as e:
+        print(f"Error retrieving {user_type}: {e}")
+        return None

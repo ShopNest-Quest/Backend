@@ -534,3 +534,70 @@ This endpoint retrieves all products along with their details, including ratings
     ```
 
 ---
+## `/get_users`
+
+- **Endpoint**: `/get_users`
+- **Method**: `GET`
+  
+### Response
+
+- `200 OK`: Users retrieved successfully.
+  - Body:
+    ```json
+    {
+        "users": [
+            {
+                "username": "<username>",
+                "isBlocked": <is_blocked>
+            },
+            {
+                "username": "<username>",
+                "isBlocked": <is_blocked>
+            },
+            ...
+        ]
+    }
+    ```
+- `500 Internal Server Error`: Failed to retrieve users.
+  - Body:
+    ```json
+    {
+        "error": "Failed to retrieve users"
+    }
+    ```
+
+---
+
+## `/get_sellers`
+
+- **Endpoint**: `/get_sellers`
+- **Method**: `GET`
+  
+### Response
+
+- `200 OK`: Sellers retrieved successfully.
+  - Body:
+    ```json
+    {
+        "sellers": [
+            {
+                "username": "<username>",
+                "isBlocked": <is_blocked>
+            },
+            {
+                "username": "<username>",
+                "isBlocked": <is_blocked>
+            },
+            ...
+        ]
+    }
+    ```
+- `500 Internal Server Error`: Failed to retrieve sellers.
+  - Body:
+    ```json
+    {
+        "error": "Failed to retrieve sellers"
+    }
+    ```
+
+---
