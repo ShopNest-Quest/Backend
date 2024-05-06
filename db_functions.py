@@ -211,7 +211,7 @@ def get_orders_sold_by_seller(seller_username):
 
         # Fetch order details for the specified seller_username
         query = """
-            SELECT o.order_date, p.product_name, p.price, o.quantity, o.total_price, o.status, i.image_url
+            SELECT o.order_date, p.product_name, p.price, o.quantity, o.total_price, o.status, i.image_url, p.product_id
             FROM Orders o
             JOIN Products p ON o.product_id = p.product_id
             LEFT JOIN ProductImages i ON p.product_id = i.product_id
@@ -226,16 +226,26 @@ def get_orders_sold_by_seller(seller_username):
         # Format the order details response
         formatted_orders = []
         for order in order_details:
+            order_date = order[0].strftime('%Y-%m-%d %H:%M:%S')  # Format order_date
+            product_name = order[1]
+            price = float(order[2])
+            quantity = order[3]
+            total_price = float(order[4])
+            status = order[5]
+            product_id = order[7]
+
             formatted_order = {
-                "order_date": order['order_date'].strftime('%Y-%m-%d %H:%M:%S'),
-                "product_name": order['product_name'],
-                "price": float(order['price']),
-                "quantity": order['quantity'],
-                "total_price": float(order['total_price']),
-                "status": order['status']
+                "order_date": order_date,
+                "product_name": product_name,
+                "price": price,
+                "quantity": quantity,
+                "total_price": total_price,
+                "status": status,
+                "product_id": product_id
             }
-            if order['image_url']:
-                formatted_order["image_url"] = order['image_url']
+            if order[6]:  # Check if image_url is not None
+                formatted_order["image_url"] = order[6]
+
             formatted_orders.append(formatted_order)
 
         cursor.close()
@@ -243,6 +253,7 @@ def get_orders_sold_by_seller(seller_username):
 
     except Error as e:
         return False, f"Error: {e}"
+
     
 def get_reviews_by_product_id(product_id):
     try:
