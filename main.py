@@ -1,18 +1,18 @@
 from flask import Flask, request, jsonify, make_response
+from config_db import create_connection
 from db_functions import add_product_to_db, add_review_to_database, authenticate, change_order_status, change_seller_blocked_status, change_user_blocked_status, check_user_exists, get_order_details_by_username, get_orders_sold_by_seller, get_products_sold_by_seller, get_products_with_ratings_and_images, get_reviews_by_product_id, get_users_or_sellers_with_blocked_status, insert_order, register, update_product_stock
-from setup_db import add_default_categories, create_sellers, create_tables, create_users, insert_product_details
+from setup_db import add_default_categories, create_sellers, create_tables, create_users, insert_dummy_user, insert_product_details
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 CORS(app, resources={r"/api/*": {"origins": "http://127.0.0.1:5500"}})
 
-@app.route('/register/admin', methods=['POST'])
+@app.route('/register/admin', methods=['GET'])
 def register_admin():
-    data = request.get_json()
-    username = data['username']
-    password = data['password']
-    email = data['email']
+    username = request.args.get("username")
+    password = request.args.get('password')
+    email = request.args.get('email')
 
     if check_user_exists("Admin", username):
         return make_response(jsonify({"message": "User already exists - login to continue"}), 400)
@@ -22,12 +22,11 @@ def register_admin():
     else:
         return make_response(jsonify({"message": "Failed to register admin,Email id already in use"}), 412)
 
-@app.route('/register/user', methods=['POST'])
+@app.route('/register/user', methods=['GET'])
 def register_user():
-    data = request.get_json()
-    username = data['username']
-    password = data['password']
-    email = data['email']
+    username = request.args.get('username')
+    password = request.args.get('password')
+    email = request.args.get('email')
 
     if check_user_exists("Users", username):
         return make_response(jsonify({"message": "User already exists - login to continue"}), 400)
@@ -37,13 +36,12 @@ def register_user():
     else:
         return make_response(jsonify({"message": "Failed to register user, Email id already in use"}), 412)
 
-@app.route('/register/seller', methods=['POST'])
+@app.route('/register/seller', methods=['GET'])
 def register_seller():
-    data = request.get_json()
-    username = data['username']
-    password = data['password']
-    email = data['email']
-    location = data.get('location')
+    username = request.args.get('username')
+    password = request.args.get('password')
+    email = request.args.get('email')
+    location = request.args.get('location')
 
     if check_user_exists("Sellers", username):
         return make_response(jsonify({"message": "Seller already exists - login to continue"}), 400)
@@ -53,11 +51,10 @@ def register_seller():
     else:
         return make_response(jsonify({"message": "Failed to register seller,Email id already in use"}), 412)
 
-@app.route('/login/admin', methods=['POST'])
+@app.route('/login/admin', methods=['GET'])
 def login_admin():
-    data = request.get_json()
-    username = data['username']
-    password = data['password']
+    username = request.args.get('username')
+    password = request.args.get('password')
 
     if not check_user_exists("Admin", username):
         return make_response(jsonify({"message": "Admin not found"}), 412)
@@ -66,11 +63,10 @@ def login_admin():
     else:
         return make_response(jsonify({"message": "Invalid credentials"}), 401)
 
-@app.route('/login/user', methods=['POST'])
+@app.route('/login/user', methods=['GET'])
 def login_user():
-    data = request.get_json()
-    username = data['username']
-    password = data['password']
+    username = request.args.get('username')
+    password = request.args.get('password')
 
     if not check_user_exists("Users", username):
         return make_response(jsonify({"message": "User not found"}), 412)
@@ -83,11 +79,10 @@ def login_user():
     else:
         return make_response(jsonify({"message": "Invalid credentials"}), 401)
 
-@app.route('/login/seller', methods=['POST'])
+@app.route('/login/seller', methods=['GET'])
 def login_seller():
-    data = request.get_json()
-    username = data['username']
-    password = data['password']
+    username = request.args.get('username')
+    password = request.args.get('password')
 
     if not check_user_exists("Sellers", username):
         return make_response(jsonify({"message": "Seller not found"}), 412)
@@ -100,16 +95,49 @@ def login_seller():
     else:
         return make_response(jsonify({"message": "Invalid credentials"}), 401)
 
-@app.route('/seller/add_product', methods=['POST'])
+@app.route('/seller/add_product', methods=['GET'])
 def add_product():
-    product_data = request.get_json()
+    # Extract parameters from the URL query string
+    product_name = request.args.get('product_name')
+    price = request.args.get('price')
+    description = request.args.get('description')
+    seller_username = request.args.get('seller_username')
+    category_id = request.args.get('category_id', None)
+    stock = request.args.get('stock', 0)
+    image_url = request.args.get('image_url')  # Single image URL as a parameter
 
-    result = add_product_to_db(product_data)
+    # Validate required parameters
+    if not all([product_name, price, description, seller_username, image_url]):
+        return make_response(jsonify({"success": False, "message": "Missing required parameters"}), 400)
 
-    if result["success"]:
-        return make_response(jsonify(result), 201)
-    else:
-        return make_response(jsonify(result), 500)
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        # Insert product details into Products table
+        insert_query = """
+            INSERT INTO Products (product_name, price, description, seller_username, category_id, stock)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(insert_query, (product_name, price, description, seller_username, category_id, stock))
+        product_id = cursor.lastrowid  # Get the auto-generated product_id
+
+        # Insert product image into ProductImages table
+        insert_image_query = """
+            INSERT INTO ProductImages (product_id, image_url)
+            VALUES (%s, %s)
+        """
+        cursor.execute(insert_image_query, (product_id, image_url))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return make_response(jsonify({"success": True, "message": "Product and image added successfully", "product_id": product_id}), 201)
+
+    except Exception as e:
+        print("Error adding product:", e)
+        return make_response(jsonify({"success": False, "message": "Failed to add product"}), 500)
 
 @app.route('/products', methods=['GET'])
 def get_all_products_endpoint():
@@ -269,10 +297,108 @@ def add_review():
     except Exception as e:
         return jsonify(error=f"An unexpected error occurred: {e}"), 500
 
+@app.route('/cart/add', methods=['GET'])
+def add_to_cart():
+    username = request.args.get('username')
+    product_id = request.args.get('product_id')
+    quantity = int(request.args.get('quantity', 1))  # Default quantity is 1 if not provided
+
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        # Retrieve product details (price) to add to cart
+        cursor.execute("SELECT price FROM Products WHERE product_id = %s", (product_id,))
+        product_price = cursor.fetchone()[0]
+
+        # Calculate total price
+        total_price = product_price * quantity
+
+        # Insert into Cart table
+        insert_query = """
+            INSERT INTO Cart (customer_username, product_id, quantity, price, total_price)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        cursor.execute(insert_query, (username, product_id, quantity, product_price, total_price))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return make_response(jsonify({"success": True, "message": "Product added to cart"}), 200)
+
+    except Exception as e:
+        print("Error adding to cart:", e)
+        return make_response(jsonify({"success": False, "message": "Failed to add product to cart"}), 500)
+
+@app.route('/cart/remove', methods=['GET'])
+def remove_from_cart():
+    username = request.args.get('username')
+
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        # Delete entry from Cart table
+        delete_query = "DELETE FROM Cart WHERE customer_username = %s"
+        cursor.execute(delete_query, (username,))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return make_response(jsonify({"success": True, "message": "Product removed from cart"}), 200)
+
+    except Exception as e:
+        print("Error removing from cart:", e)
+        return make_response(jsonify({"success": False, "message": "Failed to remove product from cart"}), 500)
+    
+@app.route('/cart/details', methods=['GET'])
+def get_cart_details():
+    username = request.args.get('username')
+
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        # Retrieve cart details for the specified user
+        select_query = """
+            SELECT c.cart_id, p.product_id, p.product_name, p.price, c.quantity, c.total_price
+            FROM Cart c
+            JOIN Products p ON c.product_id = p.product_id
+            WHERE c.customer_username = %s
+        """
+        cursor.execute(select_query, (username,))
+        cart_details = cursor.fetchall()
+
+        # Prepare response data
+        products_in_cart = []
+        for cart_item in cart_details:
+            cart_id, product_id, product_name, price, quantity, total_price = cart_item
+            product_info = {
+                "cart_id": cart_id,
+                "product_id": product_id,
+                "product_name": product_name,
+                "price": float(price),  # Convert decimal to float for JSON serialization
+                "quantity": quantity,
+                "total_price": float(total_price)  # Convert decimal to float for JSON serialization
+            }
+            products_in_cart.append(product_info)
+
+        cursor.close()
+        connection.close()
+
+        return make_response(jsonify({"success": True, "cart": products_in_cart}), 200)
+
+    except Exception as e:
+        print("Error fetching cart details:", e)
+        return make_response(jsonify({"success": False, "message": "Failed to fetch cart details"}), 500)
+
 if __name__ == '__main__':
     create_tables()
     add_default_categories()
     create_users()
     create_sellers()
     insert_product_details()
+    insert_dummy_user('admin','admin123','admin@shopnest.com')
     app.run(debug=True)

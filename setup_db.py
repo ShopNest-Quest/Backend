@@ -80,6 +80,19 @@ tables = [
         FOREIGN KEY (product_id) REFERENCES Products(product_id)
     )
     """,
+    '''
+CREATE TABLE IF NOT EXISTS Cart (
+    cart_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_username VARCHAR(50) NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    total_price DECIMAL(12, 2) NOT NULL,
+    FOREIGN KEY (customer_username) REFERENCES Users(username),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+)
+'''
+    ,
     """
     CREATE TRIGGER IF NOT EXISTS before_insert_order
 BEFORE INSERT ON Orders
@@ -309,6 +322,29 @@ def insert_product_details():
     except mysql.connector.Error as e:
         print(f"Error: {e}")
 
+def insert_dummy_user(username, password, email):
+    try:
+        # Connect to your MySQL s
+        connection = create_connection()
+        # Create a cursor object to execute queries
+        cursor = connection.cursor()
+
+        # Define the insert query
+        insert_query = "INSERT INTO Admin (username, password, email_id) VALUES (%s, %s, %s)"
+
+        # Define the values to be inserted
+        user_data = (username, password, email)
+
+        # Execute the insert query
+        cursor.execute(insert_query, user_data)
+
+        # Commit the transaction
+        connection.commit()
+
+        print("Dummy user data inserted successfully.")
+
+    except mysql.connector.Error as error:
+        print(f"Error inserting dummy user data: {error}")
 
 products_details = [
     {
